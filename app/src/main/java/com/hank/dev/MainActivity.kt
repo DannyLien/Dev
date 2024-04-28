@@ -10,6 +10,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import com.google.gson.Gson
 import com.hank.dev.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,16 +42,24 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         launch {
             val json = URL("https://api.jsonserve.com/pcLzBT").readText()
             Log.d(TAG, "onCreate: $json")
-            val jsonObject = JSONObject(json)
-            val array = jsonObject.getJSONArray("words")
-            for (i in 0..array.length() - 1) {
-                val w = array.getJSONObject(i)
-                val name = w.getString("name")
-                val means = w.getString("means")
-                Log.d(TAG, "onCreate: $name : $means")
+//            parseJSON(json)
+            val words = Gson().fromJson(json, Words::class.java)
+            for (w in words.words) {
+                Log.d(TAG, "onGson: ${w.name} : ${w.means}")
             }
         }
 
+    }
+
+    private fun parseJSON(json: String) {
+        val jsonObject = JSONObject(json)
+        val array = jsonObject.getJSONArray("words")
+        for (i in 0..array.length() - 1) {
+            val w = array.getJSONObject(i)
+            val name = w.getString("name")
+            val means = w.getString("means")
+            Log.d(TAG, "onCreate: $name : $means")
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
