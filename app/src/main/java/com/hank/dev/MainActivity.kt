@@ -10,6 +10,8 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.hank.dev.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +23,7 @@ import java.net.URL
 import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity(), CoroutineScope {
+    private lateinit var viewModel: MyViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     val TAG = MainActivity::class.java.simpleName
@@ -31,6 +34,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //MVVM + Coroutines
+        viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
+
         setSupportActionBar(binding.toolbar)
 
         binding.fab.setOnClickListener { view ->
@@ -39,15 +45,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
                 .setAnchorView(R.id.fab).show()
         }
         //JSON
-        launch {
-            val json = URL("https://api.jsonserve.com/pcLzBT").readText()
-            Log.d(TAG, "onCreate: $json")
-//            parseJSON(json)
-            val words = Gson().fromJson(json, Words::class.java)
-            for (w in words.words) {
-                Log.d(TAG, "onGson: ${w.name} : ${w.means}")
-            }
-        }
+        viewModel.readJSON()
 
     }
 
