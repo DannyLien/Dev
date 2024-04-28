@@ -11,13 +11,18 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
 import com.hank.dev.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.net.URL
+import kotlin.coroutines.CoroutineContext
 
-class MainActivity : AppCompatActivity() {
-    val TAG = MainActivity::class.java.simpleName
+class MainActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-
+    val TAG = MainActivity::class.java.simpleName
+    val job = Job() + Dispatchers.IO
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,10 +37,11 @@ class MainActivity : AppCompatActivity() {
                 .setAnchorView(R.id.fab).show()
         }
         //JSON
-        Thread {
+        launch {
             val json = URL("https://api.jsonserve.com/pcLzBT").readText()
             Log.d(TAG, "onCreate: $json")
-        }.start()
+
+        }
 
     }
 
@@ -55,5 +61,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override val coroutineContext: CoroutineContext
+        get() = job
 
 }
