@@ -1,6 +1,7 @@
 package com.hank.dev
 
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -10,9 +11,10 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
 import com.hank.dev.databinding.ActivityMainBinding
+import java.net.URL
 
 class MainActivity : AppCompatActivity() {
-
+    val TAG = MainActivity::class.java.simpleName
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
@@ -29,6 +31,12 @@ class MainActivity : AppCompatActivity() {
                 .setAction("Action", null)
                 .setAnchorView(R.id.fab).show()
         }
+        //JSON
+        Thread {
+            val json = URL("https://api.jsonserve.com/pcLzBT").readText()
+            Log.d(TAG, "onCreate: $json")
+        }.start()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
