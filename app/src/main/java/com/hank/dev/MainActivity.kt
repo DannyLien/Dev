@@ -1,6 +1,10 @@
 package com.hank.dev
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +15,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +35,16 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var binding: ActivityMainBinding
     val TAG = MainActivity::class.java.simpleName
     val job = Job() + Dispatchers.IO
+
+    val requestPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { success ->
+            if (success) {
+                takePhoto()
+            } else {
+                Snackbar.make(binding.root, "Denied", Snackbar.LENGTH_LONG).show()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -92,8 +107,21 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
+            R.id.action_camera -> {
+                if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    takePhoto()
+                } else {
+                    requestPermission.launch(Manifest.permission.CAMERA)
+                }
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun takePhoto() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivity(intent)
     }
 
     override val coroutineContext: CoroutineContext
