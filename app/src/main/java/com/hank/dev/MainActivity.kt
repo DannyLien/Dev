@@ -12,6 +12,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.hank.dev.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
@@ -46,6 +47,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         }
         //JSON
         viewModel.readJSON()
+        //names
+        val names = listOf("Aaren","Abbe","Adele","Carlyn","Carol","Cassy","Claudia",
+            "Dale","Debra","Ellen","Gilberta","Hallie","Harlene","Iaabelle","Jacklyn",
+            "Jaimie","Jenifer","Kaitlin","Kaja")
+        val recyler = binding.contentView.recycler
+        recyler.setHasFixedSize(true)
+        recyler.layoutManager = LinearLayoutManager(this)
+        recyler.adapter = NameAdapter(names)
 
     }
 
