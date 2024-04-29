@@ -48,13 +48,18 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         //JSON
         viewModel.readJSON()
         //names
-        val names = listOf("Aaren","Abbe","Adele","Carlyn","Carol","Cassy","Claudia",
-            "Dale","Debra","Ellen","Gilberta","Hallie","Harlene","Iaabelle","Jacklyn",
-            "Jaimie","Jenifer","Kaitlin","Kaja")
+        val names = listOf(
+            "Aaren", "Abbe", "Adele", "Carlyn", "Carol", "Cassy", "Claudia",
+            "Dale", "Debra", "Ellen", "Gilberta", "Hallie", "Harlene", "Iaabelle", "Jacklyn",
+            "Jaimie", "Jenifer", "Kaitlin", "Kaja"
+        )
         val recyler = binding.contentView.recycler
         recyler.setHasFixedSize(true)
         recyler.layoutManager = LinearLayoutManager(this)
-        recyler.adapter = NameAdapter(names)
+//        recyler.adapter = NameAdapter(names)
+        viewModel.words.observe(this) { words ->
+            recyler.adapter = WordAdapter(words)
+        }
 
     }
 
